@@ -53,9 +53,12 @@ class RangeDatePicker extends StatefulWidget {
     super.key,
     required this.maxDate,
     required this.minDate,
+    this.onDateSelected,
     this.onRangeSelected,
     this.currentDate,
     this.initialDate,
+    this.selectedStartDate,
+    this.selectedEndDate,
     this.selectedRange,
     this.padding = const EdgeInsets.all(16),
     this.initialPickerType = PickerType.days,
@@ -87,6 +90,18 @@ class RangeDatePicker extends StatefulWidget {
   /// If the specified range contains the [initialDate], that range will be selected.
   ///
   /// Note that only dates are considered. time fields are ignored.
+  final DateTime? selectedStartDate;
+
+  /// The initially selected date range when the picker is first opened.
+  /// If the specified range contains the [initialDate], that range will be selected.
+  ///
+  /// Note that only dates are considered. time fields are ignored.
+  final DateTime? selectedEndDate;
+
+  /// The initially selected date range when the picker is first opened.
+  /// If the specified range contains the [initialDate], that range will be selected.
+  ///
+  /// Note that only dates are considered. time fields are ignored.
   final DateTimeRange? selectedRange;
 
   /// The date to which the picker will consider as current date. e.g (today).
@@ -103,6 +118,9 @@ class RangeDatePicker extends StatefulWidget {
   ///
   /// Note that only dates are considered. time fields are ignored.
   final DateTime? initialDate;
+
+  /// Called when the user picks a range.
+  final ValueChanged<DateTime>? onDateSelected;
 
   /// Called when the user picks a range.
   final ValueChanged<DateTimeRange>? onRangeSelected;
@@ -263,10 +281,17 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
   @override
   void initState() {
     _pickerType = widget.initialPickerType;
-    final clampedInitailDate = DateUtilsX.clampDateToRange(
-        max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-    _diplayedDate =
-        DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+    final clampedInitailDate =
+        DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+    _diplayedDate = DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+
+    if (widget.selectedStartDate != null) {
+      _selectedStartDate = DateUtils.dateOnly(widget.selectedStartDate!);
+    }
+
+    if (widget.selectedEndDate != null) {
+      _selectedEndDate = DateUtils.dateOnly(widget.selectedEndDate!);
+    }
 
     if (widget.selectedRange != null) {
       _selectedStartDate = DateUtils.dateOnly(widget.selectedRange!.start);
@@ -282,6 +307,22 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
       _pickerType = widget.initialPickerType;
     }
 
+    if (widget.selectedStartDate != oldWidget.selectedStartDate) {
+      if (widget.selectedStartDate == null) {
+        _selectedStartDate = null;
+      } else {
+        _selectedStartDate = DateUtils.dateOnly(widget.selectedStartDate!);
+      }
+    }
+
+    if (widget.selectedEndDate != oldWidget.selectedEndDate) {
+      if (widget.selectedEndDate == null) {
+        _selectedEndDate = null;
+      } else {
+        _selectedEndDate = DateUtils.dateOnly(widget.selectedEndDate!);
+      }
+    }
+
     if (widget.selectedRange != oldWidget.selectedRange) {
       if (widget.selectedRange == null) {
         _selectedStartDate = null;
@@ -293,10 +334,9 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
     }
 
     if (widget.initialDate != oldWidget.initialDate) {
-      final clampedInitailDate = DateUtilsX.clampDateToRange(
-          max: widget.maxDate, min: widget.minDate, date: DateTime.now());
-      _diplayedDate =
-          DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
+      final clampedInitailDate =
+          DateUtilsX.clampDateToRange(max: widget.maxDate, min: widget.minDate, date: DateTime.now());
+      _diplayedDate = DateUtils.dateOnly(widget.initialDate ?? clampedInitailDate);
     }
 
     super.didUpdateWidget(oldWidget);
@@ -310,8 +350,7 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
           padding: widget.padding,
           child: RangeDaysPicker(
             centerLeadingDate: widget.centerLeadingDate,
-            currentDate:
-                DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
+            currentDate: DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
             initialDate: _diplayedDate,
             selectedEndDate: _selectedEndDate,
             selectedStartDate: _selectedStartDate,
@@ -341,6 +380,14 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
                 _pickerType = PickerType.months;
               });
             },
+            onStartDateChanged: (date) {
+              setState(() {
+                _selectedStartDate = date;
+                _selectedEndDate = null;
+              });
+
+              widget.onDateSelected?.call(date);
+            },
             onEndDateChanged: (date) {
               setState(() {
                 _selectedEndDate = date;
@@ -356,12 +403,6 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
                 );
               }
             },
-            onStartDateChanged: (date) {
-              setState(() {
-                _selectedStartDate = date;
-                _selectedEndDate = null;
-              });
-            },
           ),
         );
       case PickerType.months:
@@ -373,8 +414,7 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
             selectedDate: null,
             maxDate: DateUtils.dateOnly(widget.maxDate),
             minDate: DateUtils.dateOnly(widget.minDate),
-            currentDate:
-                DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
+            currentDate: DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
             currentDateDecoration: widget.currentDateDecoration,
             currentDateTextStyle: widget.currentDateTextStyle,
             disabledCellsDecoration: widget.disabledCellsDecoration,
@@ -419,8 +459,7 @@ class _RangeDatePickerState extends State<RangeDatePicker> {
             initialDate: _diplayedDate,
             maxDate: DateUtils.dateOnly(widget.maxDate),
             minDate: DateUtils.dateOnly(widget.minDate),
-            currentDate:
-                DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
+            currentDate: DateUtils.dateOnly(widget.currentDate ?? DateTime.now()),
             currentDateDecoration: widget.currentDateDecoration,
             currentDateTextStyle: widget.currentDateTextStyle,
             disabledCellsDecoration: widget.disabledCellsDecoration,
