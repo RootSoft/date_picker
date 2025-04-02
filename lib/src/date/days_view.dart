@@ -1,7 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart' show DateFormat;
 
 import '../shared/picker_grid_delegate.dart';
@@ -36,7 +35,10 @@ class DaysView extends StatelessWidget {
     required this.highlightColor,
     required this.splashColor,
     this.splashRadius,
+    this.cellPadding,
     this.disabledDayPredicate,
+    this.cellTextStylePredicate,
+    this.cellDecorationPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
 
@@ -125,8 +127,17 @@ class DaysView extends StatelessWidget {
   /// The radius of the ink splash.
   final double? splashRadius;
 
+  /// The padding between
+  final EdgeInsets? cellPadding;
+
   /// A predicate function used to determine if a given day should be disabled.
   final DatePredicate? disabledDayPredicate;
+
+  /// A predicate function used to determine the text style of a cell.
+  final CellTextStylePredicate? cellTextStylePredicate;
+
+  /// A predicate function used to determine the decoration of a cell.
+  final CellDecorationPredicate? cellDecorationPredicate;
 
   /// Builds widgets showing abbreviated days of week. The first widget in the
   /// returned list corresponds to the first day of week for the current locale.
@@ -160,7 +171,7 @@ class DaysView extends StatelessWidget {
         ExcludeSemantics(
           child: Center(
             child: Text(
-              weekday.toUpperCase(),
+              weekday,
               style: daysOfTheWeekTextStyle,
             ),
           ),
@@ -208,8 +219,10 @@ class DaysView extends StatelessWidget {
         final bool isSelectedDay = DateUtils.isSameDay(selectedDate, dayToBuild);
 
         final bool isCurrent = DateUtils.isSameDay(currentDate, dayToBuild);
-        //
-        //
+
+        final TextStyle? cellTextStyle = cellTextStylePredicate?.call(dayToBuild, isCurrent, isSelectedDay);
+        final BoxDecoration? cellDecorationStyle = cellDecorationPredicate?.call(dayToBuild, isCurrent, isSelectedDay);
+
         BoxDecoration decoration = enabledCellsDecoration;
         TextStyle style = enabledCellsTextStyle;
 
@@ -227,6 +240,14 @@ class DaysView extends StatelessWidget {
           decoration = selectedDayDecoration;
         }
 
+        if (cellTextStyle != null) {
+          style = cellTextStyle;
+        }
+
+        if (cellDecorationStyle != null) {
+          decoration = cellDecorationStyle;
+        }
+
         if (isDisabled) {
           style = disabledCellsTextStyle;
           decoration = disabledCellsDecoration;
@@ -240,6 +261,7 @@ class DaysView extends StatelessWidget {
         }
 
         Widget dayWidget = Container(
+          margin: cellPadding,
           decoration: decoration,
           child: Center(
             child: Text(

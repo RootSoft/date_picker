@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../shared/device_orientation_builder.dart';
+import '../shared/header.dart';
 import '../shared/types.dart';
 import '../shared/utils.dart';
 import 'days_view.dart';
-import '../shared/header.dart';
 import 'show_date_picker_dialog.dart';
 
 /// Displays a grid of days for a given month and allows the user to select a
@@ -74,6 +74,9 @@ class DaysPicker extends StatefulWidget {
     this.previousPageSemanticLabel = 'Previous Day',
     this.nextPageSemanticLabel = 'Next Day',
     this.disabledDayPredicate,
+    this.cellPadding,
+    this.cellTextStylePredicate,
+    this.cellDecorationPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
     assert(
@@ -234,8 +237,17 @@ class DaysPicker extends StatefulWidget {
   /// Semantic label for button to go to the next page.
   final String? nextPageSemanticLabel;
 
+  /// The padding between
+  final EdgeInsets? cellPadding;
+
   /// A predicate function used to determine if a given day should be disabled.
   final DatePredicate? disabledDayPredicate;
+
+  /// A predicate function used to determine the text style of a cell.
+  final CellTextStylePredicate? cellTextStylePredicate;
+
+  /// A predicate function used to determine the decoration of a cell.
+  final CellDecorationPredicate? cellDecorationPredicate;
 
   @override
   State<DaysPicker> createState() => _DaysPickerState();
@@ -477,7 +489,10 @@ class _DaysPickerState extends State<DaysPicker> {
                     highlightColor: highlightColor,
                     splashColor: splashColor,
                     splashRadius: widget.splashRadius,
+                    cellPadding: widget.cellPadding,
                     disabledDayPredicate: widget.disabledDayPredicate,
+                    cellTextStylePredicate: widget.cellTextStylePredicate,
+                    cellDecorationPredicate: widget.cellDecorationPredicate,
                     onChanged: (value) {
                       setState(() {
                         _selectedDate = value;

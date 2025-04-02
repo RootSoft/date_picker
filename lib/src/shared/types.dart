@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 /// Signature for evaluating a date.
 ///
 /// A [DatePredicate] is a function that takes a [DateTime] object as input and
@@ -13,3 +15,7 @@
 /// DatePredicate isWeekendPredicate = isWeekend;
 /// ```
 typedef DatePredicate = bool Function(DateTime date);
+
+typedef CellDecorationPredicate = BoxDecoration? Function(DateTime date, bool isCurrentDay, bool isSelectedDay);
+
+typedef CellTextStylePredicate = TextStyle? Function(DateTime date, bool isCurrentDay, bool isSelectedDay);

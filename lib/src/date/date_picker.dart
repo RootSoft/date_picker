@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../shared/month_picker.dart';
 import '../shared/picker_type.dart';
 import '../shared/types.dart';
 import '../shared/utils.dart';
-import 'days_picker.dart';
-import '../shared/month_picker.dart';
 import '../shared/year_picker.dart';
+import 'days_picker.dart';
 import 'show_date_picker_dialog.dart';
 
 /// Displays a grid of days for a given month and allows the user to select a
@@ -80,6 +80,9 @@ class DatePicker extends StatefulWidget {
     this.previousPageSemanticLabel,
     this.nextPageSemanticLabel,
     this.disabledDayPredicate,
+    this.cellPadding,
+    this.cellTextStylePredicate,
+    this.cellDecorationPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
   }
@@ -226,8 +229,17 @@ class DatePicker extends StatefulWidget {
   /// defaults to `Next Day/Month/Year` according to picker type.
   final String? nextPageSemanticLabel;
 
+  /// The padding between
+  final EdgeInsets? cellPadding;
+
   /// A predicate function used to determine if a given day should be disabled.
   final DatePredicate? disabledDayPredicate;
+
+  /// A predicate function used to determine the text style of a cell.
+  final CellTextStylePredicate? cellTextStylePredicate;
+
+  /// A predicate function used to determine the decoration of a cell.
+  final CellDecorationPredicate? cellDecorationPredicate;
 
   @override
   State<DatePicker> createState() => _DatePickerState();
@@ -297,6 +309,9 @@ class _DatePickerState extends State<DatePicker> {
             previousPageSemanticLabel: widget.previousPageSemanticLabel,
             nextPageSemanticLabel: widget.nextPageSemanticLabel,
             disabledDayPredicate: widget.disabledDayPredicate,
+            cellPadding: widget.cellPadding,
+            cellTextStylePredicate: widget.cellTextStylePredicate,
+            cellDecorationPredicate: widget.cellDecorationPredicate,
             onLeadingDateTap: () {
               setState(() {
                 _pickerType = PickerType.months;
