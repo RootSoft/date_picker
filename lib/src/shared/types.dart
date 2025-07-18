@@ -19,3 +19,5 @@ typedef DatePredicate = bool Function(DateTime date);
 typedef CellDecorationPredicate = BoxDecoration? Function(DateTime date, bool isCurrentDay, bool isSelectedDay);
 
 typedef CellTextStylePredicate = TextStyle? Function(DateTime date, bool isCurrentDay, bool isSelectedDay);
+
+typedef CellBuilderPredicate = Widget? Function(DateTime date, bool isCurrentDay, bool isSelectedDay, Widget child);

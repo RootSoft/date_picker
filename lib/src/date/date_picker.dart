@@ -83,6 +83,7 @@ class DatePicker extends StatefulWidget {
     this.cellPadding,
     this.cellTextStylePredicate,
     this.cellDecorationPredicate,
+    this.cellBuilderPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
   }
@@ -241,6 +242,9 @@ class DatePicker extends StatefulWidget {
   /// A predicate function used to determine the decoration of a cell.
   final CellDecorationPredicate? cellDecorationPredicate;
 
+  /// A predicate function used to determine the decoration of a cell.
+  final CellBuilderPredicate? cellBuilderPredicate;
+
   @override
   State<DatePicker> createState() => _DatePickerState();
 }
@@ -312,6 +316,7 @@ class _DatePickerState extends State<DatePicker> {
             cellPadding: widget.cellPadding,
             cellTextStylePredicate: widget.cellTextStylePredicate,
             cellDecorationPredicate: widget.cellDecorationPredicate,
+            cellBuilderPredicate: widget.cellBuilderPredicate,
             onLeadingDateTap: () {
               setState(() {
                 _pickerType = PickerType.months;

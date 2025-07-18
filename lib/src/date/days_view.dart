@@ -39,6 +39,7 @@ class DaysView extends StatelessWidget {
     this.disabledDayPredicate,
     this.cellTextStylePredicate,
     this.cellDecorationPredicate,
+    this.cellBuilderPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
 
@@ -138,6 +139,9 @@ class DaysView extends StatelessWidget {
 
   /// A predicate function used to determine the decoration of a cell.
   final CellDecorationPredicate? cellDecorationPredicate;
+
+  /// A predicate function used to determine the decoration of a cell.
+  final CellBuilderPredicate? cellBuilderPredicate;
 
   /// Builds widgets showing abbreviated days of week. The first widget in the
   /// returned list corresponds to the first day of week for the current locale.
@@ -260,7 +264,7 @@ class DaysView extends StatelessWidget {
           decoration = currentDateDecoration;
         }
 
-        Widget dayWidget = Container(
+        Widget baseCell = Container(
           margin: cellPadding,
           decoration: decoration,
           child: Center(
@@ -270,6 +274,12 @@ class DaysView extends StatelessWidget {
             ),
           ),
         );
+
+        if (cellBuilderPredicate != null) {
+          baseCell = cellBuilderPredicate?.call(dayToBuild, isCurrent, isSelectedDay, baseCell) ?? baseCell;
+        }
+
+        Widget? dayWidget = baseCell;
 
         if (isDisabled) {
           dayWidget = ExcludeSemantics(

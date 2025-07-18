@@ -77,6 +77,7 @@ class DaysPicker extends StatefulWidget {
     this.cellPadding,
     this.cellTextStylePredicate,
     this.cellDecorationPredicate,
+    this.cellBuilderPredicate,
   }) {
     assert(!minDate.isAfter(maxDate), "minDate can't be after maxDate");
     assert(
@@ -248,6 +249,9 @@ class DaysPicker extends StatefulWidget {
 
   /// A predicate function used to determine the decoration of a cell.
   final CellDecorationPredicate? cellDecorationPredicate;
+
+  /// A predicate function used to determine the decoration of a cell.
+  final CellBuilderPredicate? cellBuilderPredicate;
 
   @override
   State<DaysPicker> createState() => _DaysPickerState();
@@ -453,7 +457,7 @@ class _DaysPickerState extends State<DaysPicker> {
               previousPageSemanticLabel: widget.previousPageSemanticLabel,
               nextPageSemanticLabel: widget.nextPageSemanticLabel,
             ),
-            const SizedBox(height: 10),
+            //const SizedBox(height: 10),
             Expanded(
               child: PageView.builder(
                 scrollDirection: Axis.horizontal,
@@ -493,6 +497,7 @@ class _DaysPickerState extends State<DaysPicker> {
                     disabledDayPredicate: widget.disabledDayPredicate,
                     cellTextStylePredicate: widget.cellTextStylePredicate,
                     cellDecorationPredicate: widget.cellDecorationPredicate,
+                    cellBuilderPredicate: widget.cellBuilderPredicate,
                     onChanged: (value) {
                       setState(() {
                         _selectedDate = value;
