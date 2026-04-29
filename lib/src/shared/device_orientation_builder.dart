@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// Builds a widget tree that can depend on the device orientation.
-class DeviceOrientationBuilder extends StatelessWidget {
+class DPDeviceOrientationBuilder extends StatelessWidget {
   /// Builds a widget tree that can depend on the device orientation.
   final Widget Function(BuildContext context, Orientation orientation) builder;
 
   /// Builds a widget tree that can depend on the device orientation.
-  const DeviceOrientationBuilder({
+  const DPDeviceOrientationBuilder({
     super.key,
     required this.builder,
   });
